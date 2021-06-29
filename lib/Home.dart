@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+//Não consegui atualizar na tela
+
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -13,12 +15,17 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     TextEditingController _controllerCampo = TextEditingController();
 
-    String? _textSalvo = "Nada salvo";
+    String _textSalvo = "Nada salvo";
+
     _salvar() async {
       String valorDigitado = _controllerCampo.text;
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString("nome", valorDigitado);
+
+      setState(() {
+        _textSalvo = prefs.getString("nome") ?? "Sem valor 1";
+      });
 
       print("salvar - $valorDigitado");
     }
@@ -27,7 +34,7 @@ class _HomeState extends State<Home> {
       final prefs = await SharedPreferences.getInstance();
 
       setState(() {
-        _textSalvo = prefs.getString("nome") ?? "Sem valor";
+        _textSalvo = prefs.getString("nome") ?? "Sem valor 1";
       });
 
       print("recuperar - $_textSalvo");
@@ -48,10 +55,6 @@ class _HomeState extends State<Home> {
         padding: EdgeInsets.all(32),
         child: Column(
           children: [
-            Text(
-              _textSalvo.toString(),
-              style: TextStyle(fontSize: 20),
-            ),
             TextField(
               keyboardType: TextInputType.text,
               decoration: InputDecoration(labelText: "Digite Algo"),
@@ -72,6 +75,10 @@ class _HomeState extends State<Home> {
                   child: Text("Remover"),
                 ),
               ],
+            ),
+            Text(
+              _textSalvo,
+              style: TextStyle(fontSize: 20),
             ),
           ],
         ),
